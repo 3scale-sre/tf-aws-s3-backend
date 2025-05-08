@@ -2,14 +2,18 @@
 # create an S3 bucket to store the state file in
 resource "aws_s3_bucket" "terraform_state_storage_s3" {
   bucket = format("%s-tfstate", var.aws_account_name)
-  versioning {
-    enabled = true
-  }
   lifecycle {
     prevent_destroy = true
   }
   tags = {
     Name = "S3 Remote Terraform State Store"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "terraform_state_storage_s3" {
+  bucket = aws_s3_bucket.terraform_state_storage_s3.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
